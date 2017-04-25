@@ -31,7 +31,7 @@ def re_geocoding(lat, lon):
     """
 
     # Set the appliaction key and call the reverse_geocode API
-    gmaps = googlemaps.Client(key='AIzaSyCGwr54FPosQvvW2YPYONUtAgdMA6scE2M')
+    gmaps = googlemaps.Client(key='Your Key')
     result = gmaps.reverse_geocode((float(lat)/10000000, float(lon)/10000000),
                                    result_type = 'street_address')
 
@@ -49,13 +49,25 @@ def re_geocoding(lat, lon):
 
 # Input the json file downloaded from Google Takeout
 # URL: https://takeout.google.com/settings/takeout/custom
-json_file = open('LocationHistory.json')
+json_file = open('Test_Guus_Location.json')
 json_string = json_file.read()
 json_data = json.loads(json_string)
 locations = json_data["locations"]
 
 # Initailization the  variable of result
 result_table = pd.DataFrame() # Pandas data frame
+
+# Debug
+"""for location in locations:
+    # Extract UTC time from timestampMs
+    UTC_time = datetime.fromtimestamp(
+              int(location.get("timestampMs"))/1000
+              ).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Get the address dictionary using the latitude and longitude value and
+    # re_geocoding(lat, lon) function defined above
+    location_detail = re_geocoding(location.get("latitudeE7"), location.get("longitudeE7"))
+    pprint(location_detail)"""
 
 for location in locations:
     # Extract UTC time from timestampMs
@@ -91,6 +103,6 @@ result_table = result_table[[
 
 # Write the result into a excel file, if you would like to write it into csv file,
 # use result_table.to_csv('regeo.csv', sep=' ') instead
-writer = pd.ExcelWriter('re_geo_output.xlsx')
+writer = pd.ExcelWriter('Test_Guus_re_geo_output.xlsx')
 result_table.to_excel(writer,'Sheet1')
 writer.save()
